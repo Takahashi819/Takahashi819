@@ -202,14 +202,55 @@ print(f"RMSE: {rmse_regression:.2g}")
 print(f"R² (相関係数²): {r2_regression:.2g}")
 print(f"MBE: {mbe_regression:.2g}")
 
-# 森林、非森林、SVR, RFへの変更点
+# 森林、全サイト、SVR, RFへの変更点
 ##nonforest(XGBoost)
 ### データの読み込みと前処理
 din_asiaflux = np.loadtxt("/home/test/research/nonforest.csv", delimiter=",", skiprows=1)
+## 非森林カスタム分割インデックス
+split_dict = {
+    1: [(0, 128), (391, 416)],
+ 2: [(129, 197), (1122, 1396)],
+ 3: [(198, 373), (2258, 2500)],
+ 4: [(374, 390)],
+ 5: [(782, 854), (1397, 1887)],
+ 6: [(417, 492)],
+ 7: [(493, 517), (1888, 1979)],
+ 8: [(855, 991), (1980, 2157)],
+ 9: [(992, 1121), (2158, 2257)],
+ 10: [(518, 781)]
+}
 
 ## all sites(XGBoost)
 ### データの読み込みと前処理
 din_asiaflux = np.loadtxt("/home/test/research/all_sites.csv", delimiter=",", skiprows=1)
+## オールサイトカスタム分割インデックス
+split_dict = {
+    1: [(0, 128), (1576, 1601), (3161, 3298), (8298, 8784), (10096, 10265)],
+ 2: [(129, 197),
+  (2301, 2773),
+  (3299, 3435),
+  (5575, 5849),
+  (8785, 8875),
+  (10004, 10095)],
+ 3: [(198, 373),
+  (2774, 2864),
+  (3756, 3800),
+  (5850, 6260),
+  (8876, 8953),
+  (10266, 10508)],
+ 4: [(374, 390),
+  (2865, 2977),
+  (3436, 3755),
+  (6261, 6626),
+  (8954, 9090),
+  (10509, 10773)],
+ 5: [(391, 402), (2978, 3160), (4640, 4712), (7624, 8114), (9684, 10003)],
+ 6: [(403, 533), (1602, 1677), (3801, 4249), (7029, 7349), (9182, 9313)],
+ 7: [(534, 696), (1678, 1702), (4250, 4639), (7350, 7623), (9314, 9405)],
+ 8: [(697, 819), (2127, 2300), (4713, 4849), (6627, 7028), (9406, 9583)],
+ 9: [(890, 1575), (1703, 1862), (4850, 4979), (8115, 8297), (9584, 9683)],
+ 10: [(820, 889), (1863, 2126), (4980, 5574), (9091, 9181)]
+}
 
 ##forest(SVR)
 param_grid = {
@@ -364,37 +405,6 @@ np.savetxt(
 ### クリーンなデータの総数を表示
 total_cleaned_data = np.sum(valid_rows_mask)
 print(f"クリーンなデータの総数: {total_cleaned_data}")
-
-## all sitesを森林と非森林に分ける
-import numpy as np
-
-### データの読み込み
-din_asiaflux = np.loadtxt("/home/test/research/analysis_data_set.csv", delimiter=",", skiprows=1)
-
-### land cover (lc) の列を取得（17列目）
-lc = din_asiaflux[:, 17]
-
-### 1 (forest) のデータを抽出
-forest_data = din_asiaflux[lc == 1]
-
-### 0 (nonforest) のデータを抽出
-nonforest_data = din_asiaflux[lc == 0]
-
-### forest データを保存
-np.savetxt("forest.csv", forest_data, delimiter=",", header=",".join(map(str, range(din_asiaflux.shape[1]))), comments="")
-
-### nonforest データを保存
-np.savetxt("nonforest.csv", nonforest_data, delimiter=",", header=",".join(map(str, range(din_asiaflux.shape[1]))), comments="")
-
-print("CSVファイルが作成されました: forest.csv, nonforest.csv")
-
-
-
-
-
-
-
-
 
 
 
