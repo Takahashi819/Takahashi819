@@ -2,7 +2,10 @@
 Takahashi819/Takahashi819 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 You can click the Preview link to take a look at your changes.
 --->
-#forest(XGBoost)
+
+#使ったコードGPP
+
+##forest(XGBoost)
 ###ライブラリインポート
 import matplotlib.pyplot as plt
 import numpy as np
@@ -198,4 +201,155 @@ print(f"回帰直線の式: y = {reg_model.coef_[0]:.2g}x + {reg_model.intercept
 print(f"RMSE: {rmse_regression:.2g}")
 print(f"R² (相関係数²): {r2_regression:.2g}")
 print(f"MBE: {mbe_regression:.2g}")
+
+#森林、非森林、SVR, RFへの変更点
+##nonforest(XGBoost)
+### データの読み込みと前処理
+din_asiaflux = np.loadtxt("/home/test/research/nonforest.csv", delimiter=",", skiprows=1)
+
+##all sites(XGBoost)
+### データの読み込みと前処理
+din_asiaflux = np.loadtxt("/home/test/research/all_sites.csv", delimiter=",", skiprows=1)
+
+##forest(SVR)
+param_grid = {
+    'C': [0.1, 1, 10, 100],
+    'epsilon': [0.1, 0.5, 1],
+    'gamma': [1, 3]
+}
+
+best_models = []
+best_params_per_fold = {}
+
+X = np.column_stack(feature_combinations[0])
+scaler = MinMaxScaler()
+X_normalized = scaler.fit_transform(X)
+
+for fold in range(np.max(custom_fold_indices) + 1):  # fold は 0-indexed
+    print(f"Processing fold {fold + 1}...")
+
+    train_idx = np.where((custom_fold_indices != fold) & (custom_fold_indices >= 0))[0]
+    valid_idx = np.where(custom_fold_indices == fold)[0]
+
+    if valid_idx.size == 0:
+        print(f"Warning: No validation data for fold {fold + 1}")
+        continue
+
+    X_train, X_valid = X_normalized[train_idx], X_normalized[valid_idx]
+    y_train, y_valid = obs_gpp[train_idx], obs_gpp[valid_idx]
+
+    fold_split = PredefinedSplit(custom_fold_indices[train_idx])
+
+    svr = SVR()
+
+
+##nonforest(SVR)
+### データの読み込みと前処理
+din_asiaflux = np.loadtxt("/home/test/research/nonforest.csv", delimiter=",", skiprows=1)
+
+##all sites(SVR)
+### データの読み込みと前処理
+din_asiaflux = np.loadtxt("/home/test/research/all_sites.csv", delimiter=",", skiprows=1)
+
+##forest(RF)
+param_grid = {
+    'n_estimators': [500, 700, 1000],
+    'max_depth': [5, 8],
+    'min_samples_split': [2, 5, 8],
+    'min_samples_leaf': [2, 5, 8]
+}
+
+best_models = []
+best_params_per_fold = {}
+
+X = np.column_stack(feature_combinations[0])
+scaler = MinMaxScaler()
+X_normalized = scaler.fit_transform(X)
+
+for fold in range(np.max(custom_fold_indices) + 1):  # fold は 0-indexed
+    print(f"Processing fold {fold + 1}...")
+
+    train_idx = np.where((custom_fold_indices != fold) & (custom_fold_indices >= 0))[0]
+    valid_idx = np.where(custom_fold_indices == fold)[0]
+
+    if valid_idx.size == 0:
+        print(f"Warning: No validation data for fold {fold + 1}")
+        continue
+
+    X_train, X_valid = X_normalized[train_idx], X_normalized[valid_idx]
+    y_train, y_valid = obs_gpp[train_idx], obs_gpp[valid_idx]
+
+    fold_split = PredefinedSplit(custom_fold_indices[train_idx])
+
+    rf = RandomForestRegressor(random_state=42)
+
+
+##nonforest(RF)
+### データの読み込みと前処理
+din_asiaflux = np.loadtxt("/home/test/research/nonforest.csv", delimiter=",", skiprows=1)
+
+##all sites(RF)
+### データの読み込みと前処理
+din_asiaflux = np.loadtxt("/home/test/research/all_sites.csv", delimiter=",", skiprows=1)
+
+#NEEで使ったコードの変更点
+### データの読み込みと前処理
+din_asiaflux = np.loadtxt("/home/test/research/forest.csv", delimiter=",", skiprows=1)
+sw = din_asiaflux[:,2]
+lai = din_asiaflux[:,5]
+ave = din_asiaflux[:,6]
+amp = din_asiaflux[:,7]
+lst_day = din_asiaflux[:,8]
+lst_night = din_asiaflux[:,9]
+brdf1 = din_asiaflux[:,10]
+brdf2 = din_asiaflux[:,11]
+brdf3 = din_asiaflux[:,12]
+brdf4 = din_asiaflux[:,13]
+brdf5 = din_asiaflux[:,14]
+brdf6 = din_asiaflux[:,15]
+brdf7 = din_asiaflux[:,16]
+lc = din_asiaflux[:,17]
+pre_gpp = din_asiaflux[:,18]
+ndvi = (brdf2 - brdf1) / (brdf2 + brdf1)  
+evi = 2.5 * (brdf2 - brdf1) / (brdf2 + 6 * brdf1 - 7.5 * brdf3 + 1)
+lswi = (brdf2 - brdf6) / (brdf2 + brdf6)
+ndwi = (brdf2 - brdf5) / (brdf2 + brdf5)
+lst_ave = (lst_day + lst_night) / 2
+obs_nee = din_asiaflux[:,3]
+
+### --- 特徴量セットの定義 ---
+feature_combinations = [
+    (sw, lst_ave, lai, ndvi, lswi, lc, pre_gpp),
+    (sw, lst_ave, lai, ndvi, lswi, ave, amp, pre_gpp),
+    (sw, lst_ave, lai, evi, lswi, lc, pre_gpp),
+    (sw, lst_ave, lai, evi, lswi, ave, amp, pre_gpp),
+    (sw, lst_ave, lai, ndvi, ndwi, lc, pre_gpp),
+    (sw, lst_ave, lai, ndvi, ndwi, ave, amp, pre_gpp),
+    (sw, lst_ave, lai, evi, ndwi, lc, pre_gpp),
+    (sw, lst_ave, lai, evi, ndwi, ave, amp, pre_gpp),
+    (sw, lst_ave, lc, brdf1, brdf2, brdf3, brdf4, brdf5, brdf6, brdf7, pre_gpp),
+    (sw, lst_ave, ave, amp, brdf1, brdf2, brdf3, brdf4, brdf5, brdf6, brdf7, pre_gpp)
+]
+##変数obs_gppをobs_neeにする
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
