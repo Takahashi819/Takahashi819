@@ -82,7 +82,6 @@ for fold, ranges in split_dict.items():
 
 custom_split = PredefinedSplit(custom_fold_indices)
 
-# SVRモデル
 param_grid = {
     'n_estimators': [500, 800, 1200],  
     'max_depth': [5, 8, 12],  
@@ -168,14 +167,9 @@ rmse_regression = np.sqrt(mse_regression)
 mbe_regression = np.mean(ensemble_mean - obs_gpp)
 data_count = len(obs_gpp)
 
-# 可視化
 plt.figure(figsize=(6, 6))
-
-# 散布図
 plt.scatter(obs_gpp, ensemble_mean, alpha=0.6, color='blue', s=10)
 plt.scatter(obs_gpp, ensemble_mean, c=z, cmap='jet', alpha=0.6, s=10)
-
-# 回帰直線
 plt.plot(obs_gpp, predicted_line, color='red', linewidth=2,
          label=f"forest\n"
                f"data={data_count}\n"
@@ -184,25 +178,15 @@ plt.plot(obs_gpp, predicted_line, color='red', linewidth=2,
                f"MBE={mbe_regression:.2g}\n"
                f"y = {reg_model.coef_[0]:.2g}x + {reg_model.intercept_:.2g}")
 
-# ラベル位置調整
 plt.legend(fontsize=16, loc='upper right')
-
-# 軸ラベル
 plt.xlabel(r"Obs GPP(gC m$^{-2}$ day$^{-1}$)", fontsize=20)
 plt.ylabel("Model GPP(gC m$^{-2}$ day$^{-1}$)", fontsize=20)
-
-# タイトル
 plt.text(1, 26, "XGBoost", fontsize=24, ha='left', va='top', color='black')
-
-# 軸の範囲と比率調整
 plt.xlim(-2.5, 30)
 plt.ylim(-2.5, 30)
 plt.gca().set_aspect('equal', adjustable='box')
 
-# グリッドなし
 plt.grid(False)
-
-# グラフを表示
 plt.show()
 
 # --- CSVファイル保存 ---
@@ -214,7 +198,6 @@ results_df = pd.DataFrame({
     "Predicted_GPP": ensemble_mean
 })
 
-# CSV保存
 results_df.to_csv(output_path, index=False)
 
 print(f"予測結果をCSVファイルに保存しました: {output_path}")
