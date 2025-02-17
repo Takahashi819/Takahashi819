@@ -11,6 +11,7 @@ Takahashi819/Takahashi819 is a ✨ special ✨ repository because its `README.md
 You can click the Preview link to take a look at your changes.
 --->
 #森林サイト(XGBoost)
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -118,10 +119,10 @@ for fold in range(np.max(custom_fold_indices) + 1):  # fold は 0-indexed
     # `train_idx` に対応した `PredefinedSplit`
     fold_split = PredefinedSplit(custom_fold_indices[train_idx])
 
-    # SVR モデルの作成
+    # XGB モデルの作成
     xgb = XGBRegressor()
 
-    # GridSearchCV (`cv=fold_split` に修正)
+    # GridSearchCV 
     grid_search = GridSearchCV(xgb, param_grid, scoring='neg_mean_squared_error', cv=fold_split, verbose=1, n_jobs=-1)
     grid_search.fit(X_train, y_train)
 
@@ -160,8 +161,8 @@ xy = np.vstack([obs_gpp, ensemble_mean])
 z = gaussian_kde(xy)(xy)
 
 # MSE, RMSE, MBE の再計算
-r_correlation = np.corrcoef(obs_gpp, ensemble_mean)[0, 1]  # 相関行列の (0,1) 要素を取得
-r2_regression = r_correlation ** 2  # 相関係数の二乗を決定係数とする
+r_correlation = np.corrcoef(obs_gpp, ensemble_mean)[0, 1]  
+r2_regression = r_correlation ** 2  
 mse_regression = mean_squared_error(obs_gpp, ensemble_mean)
 rmse_regression = np.sqrt(mse_regression)
 mbe_regression = np.mean(ensemble_mean - obs_gpp)
