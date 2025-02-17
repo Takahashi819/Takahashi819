@@ -6,7 +6,7 @@ You can click the Preview link to take a look at your changes.
 # 使ったコードGPP
 
 ## forest(XGBoost)
-###ライブラリインポート
+### ライブラリインポート
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
