@@ -330,9 +330,63 @@ feature_combinations = [
     (sw, lst_ave, lc, brdf1, brdf2, brdf3, brdf4, brdf5, brdf6, brdf7, pre_gpp),
     (sw, lst_ave, ave, amp, brdf1, brdf2, brdf3, brdf4, brdf5, brdf6, brdf7, pre_gpp)
 ]
-## 変数obs_gppをobs_neeにする
+## 残りの変更
+変数obs_gppをobs_neeにする
 
+# asiaflux061.csvから必要なデータを読み取る
+import numpy as np
 
+### データの読み込み（17列と10列）
+data_column_17 = np.loadtxt("asia_flux_061.csv", delimiter=",", usecols=17, skiprows=1)
+data_column_10 = np.loadtxt("asia_flux_061.csv", delimiter=",", usecols=10, skiprows=1)
+
+### -9999 を除いた行のインデックスを取得（17列と10列）
+valid_rows_mask = (data_column_17 != -9999) & (data_column_10 != -9999)
+
+### 84列と85列のデータを読み込む(今回はndiv_ave,amp)
+data_columns = [
+    np.loadtxt("asia_flux_061.csv", delimiter=",", usecols=i, skiprows=1)
+    for i in [84, 85]
+]
+
+### 17列と10列のクリーンなデータを適用したマスクを使用
+cleaned_data_columns = [col[valid_rows_mask] for col in data_columns]
+
+### クリーンデータを保存
+np.savetxt(
+    "cleaned_data_columns.csv",
+    np.column_stack(cleaned_data_columns),
+    delimiter=",",
+    header="ave,amp",
+    comments=""
+)
+
+### クリーンなデータの総数を表示
+total_cleaned_data = np.sum(valid_rows_mask)
+print(f"クリーンなデータの総数: {total_cleaned_data}")
+
+## all sitesを森林と非森林に分ける
+import numpy as np
+
+### データの読み込み
+din_asiaflux = np.loadtxt("/home/test/research/analysis_data_set.csv", delimiter=",", skiprows=1)
+
+### land cover (lc) の列を取得（17列目）
+lc = din_asiaflux[:, 17]
+
+### 1 (forest) のデータを抽出
+forest_data = din_asiaflux[lc == 1]
+
+### 0 (nonforest) のデータを抽出
+nonforest_data = din_asiaflux[lc == 0]
+
+### forest データを保存
+np.savetxt("forest.csv", forest_data, delimiter=",", header=",".join(map(str, range(din_asiaflux.shape[1]))), comments="")
+
+### nonforest データを保存
+np.savetxt("nonforest.csv", nonforest_data, delimiter=",", header=",".join(map(str, range(din_asiaflux.shape[1]))), comments="")
+
+print("CSVファイルが作成されました: forest.csv, nonforest.csv")
 
 
 
