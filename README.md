@@ -3,9 +3,9 @@ Takahashi819/Takahashi819 is a ✨ special ✨ repository because its `README.md
 You can click the Preview link to take a look at your changes.
 --->
 
-#使ったコードGPP
+# 使ったコードGPP
 
-##forest(XGBoost)
+## forest(XGBoost)
 ###ライブラリインポート
 import matplotlib.pyplot as plt
 import numpy as np
@@ -202,12 +202,12 @@ print(f"RMSE: {rmse_regression:.2g}")
 print(f"R² (相関係数²): {r2_regression:.2g}")
 print(f"MBE: {mbe_regression:.2g}")
 
-#森林、非森林、SVR, RFへの変更点
+# 森林、非森林、SVR, RFへの変更点
 ##nonforest(XGBoost)
 ### データの読み込みと前処理
 din_asiaflux = np.loadtxt("/home/test/research/nonforest.csv", delimiter=",", skiprows=1)
 
-##all sites(XGBoost)
+## all sites(XGBoost)
 ### データの読み込みと前処理
 din_asiaflux = np.loadtxt("/home/test/research/all_sites.csv", delimiter=",", skiprows=1)
 
@@ -243,15 +243,15 @@ for fold in range(np.max(custom_fold_indices) + 1):  # fold は 0-indexed
     svr = SVR()
 
 
-##nonforest(SVR)
+## nonforest(SVR)
 ### データの読み込みと前処理
 din_asiaflux = np.loadtxt("/home/test/research/nonforest.csv", delimiter=",", skiprows=1)
 
-##all sites(SVR)
+## all sites(SVR)
 ### データの読み込みと前処理
 din_asiaflux = np.loadtxt("/home/test/research/all_sites.csv", delimiter=",", skiprows=1)
 
-##forest(RF)
+## forest(RF)
 param_grid = {
     'n_estimators': [500, 700, 1000],
     'max_depth': [5, 8],
@@ -284,15 +284,15 @@ for fold in range(np.max(custom_fold_indices) + 1):  # fold は 0-indexed
     rf = RandomForestRegressor(random_state=42)
 
 
-##nonforest(RF)
+## nonforest(RF)
 ### データの読み込みと前処理
 din_asiaflux = np.loadtxt("/home/test/research/nonforest.csv", delimiter=",", skiprows=1)
 
-##all sites(RF)
+## all sites(RF)
 ### データの読み込みと前処理
 din_asiaflux = np.loadtxt("/home/test/research/all_sites.csv", delimiter=",", skiprows=1)
 
-#NEEで使ったコードの変更点
+# NEEで使ったコードの変更点
 ### データの読み込みと前処理
 din_asiaflux = np.loadtxt("/home/test/research/forest.csv", delimiter=",", skiprows=1)
 sw = din_asiaflux[:,2]
@@ -330,7 +330,7 @@ feature_combinations = [
     (sw, lst_ave, lc, brdf1, brdf2, brdf3, brdf4, brdf5, brdf6, brdf7, pre_gpp),
     (sw, lst_ave, ave, amp, brdf1, brdf2, brdf3, brdf4, brdf5, brdf6, brdf7, pre_gpp)
 ]
-##変数obs_gppをobs_neeにする
+## 変数obs_gppをobs_neeにする
 
 
 
