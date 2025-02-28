@@ -345,7 +345,7 @@ total_cleaned_data = np.sum(valid_rows_mask)
 print(f"クリーンなデータの総数: {total_cleaned_data}")
 
 # サイトごとの平均
-## これはNEEの行の抽出
+## NEEの行の抽出
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
